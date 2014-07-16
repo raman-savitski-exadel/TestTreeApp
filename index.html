@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tree App</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="lib/bootstrap-treeview.min.css">
+</head>
+<body ng-app="TreeApp">
+  <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+
+<script type="text/ng-template" id="tree-template.html">
+	<div
+		ng-repeat="node in collection"
+	>
+		<li class="list-group-item node-tree"
+			ng-click="hasChilds(node) && toggle(node)"
+		>
+			<span class="icon pull-right" ng-click="controller.remove(node)"><i class="glyphicon glyphicon-remove"></i> </span>
+			<span class="icon pull-right" ng-click="controller.edit(node)"><i class="glyphicon glyphicon-pencil"></i> </span>
+			<span class="icon pull-right" ng-click="expand(node) && controller.add(node)"><i class="glyphicon glyphicon-plus"></i> </span>
+
+			<span class="icon" ng-show="!hasChilds(node)">
+				<i class="glyphicon"></i>
+			</span>
+			<span class="indent" ng-repeat="num in getNumber(level)"></span>
+			<span class="icon"
+				ng-show="hasChilds(node) && isCollapsed(node)"
+			><i class="click-expand glyphicon glyphicon-chevron-right"></i></span>
+			<span class="icon"
+				ng-show="hasChilds(node) && !isCollapsed(node)"
+			><i class="click-expand glyphicon glyphicon-chevron-down"></i></span>
+			<span class="icon"><i class="glyphicon glyphicon-stop"></i></span>
+			{{node.get('title')}}
+		</li>
+			<recursive
+			ng-show="!isCollapsed(node) && hasChilds(node)"
+		>
+			<tree-collection
+	    	ng-model="node"
+	    	controller="controller"
+	    	level="{{level+1}}"
+	    ></tree-collection>
+  	</recursive>
+	</div>
+</script>
+
+<script type="text/ng-template" id="saved-list.html">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>Previously saved states</h4>
+    <ul>
+    		<li ng-repeat="state in list" ng-click="$close(state)">
+    			<a href="">{{state.title}}</a>
+    		</li>
+    </ul>
+    <br><br>
+    <button class="btn btn-primary btn-block" type="button" ng-click="$dismiss()">Close</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="edit-node.html">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>Edit Node</h4>
+    <form name="editForm">
+		  <div class="form-group">
+		    <label for="nodetitle">Title</label>
+		    <input type="text" class="form-control" id="nodetitle" ng-model="data.title">
+		  </div>
+		  <div class="form-group">
+		    <label for="nodedesc">Description</label>
+		    <textarea class="form-control" id="nodedesc"
+		    	ng-model="data.description"
+		    ></textarea>
+		  </div>
+    </form>
+    <br><br>
+    <div class="text-right">
+    	<button class="btn btn-success" type="button" ng-click="$close(data)">Save</button>
+    	<button class="btn btn-primary" type="button" ng-click="$dismiss()">Close</button>
+    </div>
+  </div>
+</script>
+
+
+
+  <!-- Add your site or application content here -->
+  <div class="container" ng-controller="TreeAppController">
+  	<h1 class="text-center">Tree App</h1>
+
+  	<button class="btn btn-primary" ng-click="save()">Save Tree</button>
+  	<button class="btn btn-primary" ng-click="restoreModal()">Restore saved Tree</button>
+
+  	<br><br>
+
+  	<div class="treeview well">
+      <button class="btn btn-primary btn-sm" ng-click="add()">Add root node</button>
+      <br><br>
+			<ul class="list-group">
+		    <tree-collection
+		    	ng-model="treeModel"
+		    	controller="this"
+		    ></tree-collection>
+		  </ul>
+  	</div>
+
+  </div>
+
+
+  <!--[if lt IE 9]>
+  <script src="lib/es5-shim.js"></script>
+  <script src="lib/json3.min.js"></script>
+  <![endif]-->
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-cookies.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-route.min.js"></script>
+
+  <script src="lib/ui-bootstrap-tpls-0.11.0.min.js"></script>
+  <script src="lib/bootstrap-treeview.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/tree.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/utils.js"></script>
+
+
+</body>
+</html>
